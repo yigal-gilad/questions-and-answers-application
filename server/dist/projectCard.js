@@ -9,18 +9,22 @@ class ProjectCard extends LitElement {
   render() {
     return html`
         <div class="container">
-        <h3> <b> ${this.name} </b> </h3>
-        <div class="input-group mb-3">
-  <input type="text" id="myInput" value="${this.input}" @input=${e => {
+        <h3 style="color: white">Q&A application</h3>
+        
+        <div class="card" style=" background-color: #d8bfd8; border-radius: 15px !important;">
+  <div class="card-body">
+  <div class="input-group mb-3">
+<input type="text" style="border-radius: 15px 0 0 15px;" id="myInput" value="${this.input}" @input=${e => {
       this.input = e.target.value;
     }} class="form-control" placeholder="Ask your question here...">
-  <div class="input-group-append">
-    <button id="mybutton" class="btn btn-dark" ?disabled="${!this.input}"
-     @click="${e => {
+<div class="input-group-append">
+<button id="mybutton" class="btn btn-light" style="border-radius: 0 15px 15px 0;" ?disabled="${!this.input}"
+@click="${e => {
       this.sendQuestion(this.input);
     }}">Ask</button>
-  </div>
- 
+
+</div>
+
 </div>
 <div class="text-center" ?hidden="${this.messages.length}">
 <br>
@@ -32,43 +36,73 @@ class ProjectCard extends LitElement {
 <br>
 <br>
 <h3>Be the first to ask a question!</h3>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 </div>
-<ul class="list-group" ?hidden="${!this.messages.length}">
+<div ?hidden="${!this.messages.length}">
+
 ${repeat(this.messages, item => item.type, (item, index) => html`
-
-<li ?hidden="${item.type !== "bot_answer"}" class="list-group-item" style="word-wrap: break-word;">
+<div ?hidden="${item.type !== "bot_answer"}">
+<div class="card border border-light" style="border-radius: 15px !important;">
+<div class="card-body">
 <span class="badge badge-warning" ?hidden="${index !== 0}">new!</span>
-<h5>Answer to similer question:</h5>
+<h5><i class="fas fa-exclamation-circle"></i> Answer to similer question:</h5>
+<p><i class="fas fa-question-circle"></i> ${item.payload.question}</p>
+<h6><i class="fas fa-robot"></i> Bot answered:</h6>
+<p>${item.payload.answer}</p>
+</div>
 
-<p>${item.payload.question}</p>
-<h6>Bot answerd:</h6>
-<p>${item.payload.answer}</p>
-</li>
-<li ?hidden="${item.type !== "user_answer"}" class="list-group-item" style="word-wrap: break-word;">
+</div>
+<br>
+</div>
+
+<div ?hidden="${item.type !== "user_answer"}">
+<div class="card border border-light" style="border-radius: 15px !important;">
+<div class="card-body">
 <span class="badge badge-warning" ?hidden="${index !== 0}">new!</span>
-<h5>Answer to question:</h5>
-<p>${item.payload.question}</p>
-<h6>User answerd:</h6>
+<h5><i class="fas fa-exclamation-circle"></i> Answer to question:</h5>
+<p><i class="fas fa-question-circle"></i> ${item.payload.question}</p>
+<h6><i class="fas fa-user"></i> User answered:</h6>
 <p>${item.payload.answer}</p>
-</li>
-<li ?hidden="${item.type !== "user_question"}" class="list-group-item" style="word-wrap: break-word;">
+</div>
+
+</div>
+<br>
+</div>
+
+<div ?hidden="${item.type !== "user_question"}">
+<div class="card border border-light" style="border-radius: 15px !important;">
+<div class="card-body">
 <span class="badge badge-warning" ?hidden="${index !== 0}">new!</span>
 <h5>User asked a question:</h5>
-<p>${item.payload.question}</p>
+<p><i class="fas fa-question-circle"></i> ${item.payload.question}</p>
 <!-- Button to Open the Modal -->
 <button type="button"
- class="btn btn-primary float-right" data-toggle="modal" data-target="#myModal" @click="${e => {
+class="btn btn-outline-success float-right" style="border-radius: 15px;"
+ data-toggle="modal" data-target="#myModal" @click="${e => {
       this.selectedQuestion = item.payload.question;
     }}">
-  Answer
+Answer
 </button>
 
-</li>
+</div>
+</div>
+<br>
+</div>
 `)}
-</ul>
+</div>
+  </div>
+</div>
+       
   <!-- The Modal -->
-  <div class="modal" id="myModal">
-    <div class="modal-dialog">
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
       
         <!-- Modal Header -->
@@ -79,7 +113,7 @@ ${repeat(this.messages, item => item.type, (item, index) => html`
         
         <!-- Modal body -->
         <div class="modal-body">
-        <p>${this.selectedQuestion}</p>
+        <p><i class="fas fa-question-circle"></i> ${this.selectedQuestion}</p>
         <input type="text" id="answerInput" @input=${e => {
       this.answerInput = e.target.value;
     }} 
@@ -87,7 +121,7 @@ ${repeat(this.messages, item => item.type, (item, index) => html`
         <br>
         <div data-dismiss="modal">
           <button type="button"
-            class="btn btn-primary float-right"
+            class="btn btn-success float-right"
             @click="${e => {
       this.sendAnswer(this.selectedQuestion, this.answerInput);
     }}"
@@ -104,7 +138,8 @@ ${repeat(this.messages, item => item.type, (item, index) => html`
 
   constructor() {
     super();
-    this.mainUrl = window.location.href;
+    this.mainUrl = window.location.href; // this.mainUrl = "http://localhost:3000/";
+
     this.getMessagesUrl = this.mainUrl + "getmessages";
     this.sendQuestionUrl = this.mainUrl + "hendlequestion";
     this.sendAnswerUrl = this.mainUrl + "hendleanswer";

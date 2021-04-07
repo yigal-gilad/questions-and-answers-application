@@ -7,20 +7,20 @@ const { celebrate, Joi, errors, Segments } = require('celebrate');
 var question = require('../models/question')
 app.use(errors());
 
-// client.indices.create({
-//     index: 'questions'
-// }, function (err, resp, status) {
-//     if (err) {
-//         console.log(err);
-//     }
-//     else {
-//         console.log("create", resp);
-//     }
-// });
-
-client.count({ index: 'questions', type: 'question' }, function (err, resp, status) {
-    console.log("questions:", resp);
+client.indices.create({
+    index: 'questions'
+}, function (err, resp, status) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("create", resp);
+    }
 });
+
+// client.count({ index: 'questions', type: 'question' }, function (err, resp, status) {
+//     console.log("questions:", resp);
+// });
 
 // hendle user answer:
 router.post('/hendleanswer', celebrate({
