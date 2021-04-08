@@ -6,8 +6,15 @@ const helmet = require('helmet');
 const clc = require("cli-color");
 const mongoose = require('mongoose');
 const server = http.Server(app);
-const socketIO = require('socket.io');
-const io = socketIO(server);
+const messages = require('./messages');
+const handleQuestion = require('./promises/handleQuestion');
+const handleAnswer = require('./promises/handleAnswer');
+// const socketIO = require('socket.io');
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
 const bodyParser = require("body-parser");
 const env = require('./readenv');
 const Ddos = require('ddos');
@@ -46,23 +53,34 @@ mongoose.connection.once('open', function () {
 // ping to elastic server
 client.ping({
   requestTimeout: 30000,
-}, function(error) {
+}, function (error) {
   if (error) {
-      console.error('elasticsearch cluster is down!', error);
+    console.error('elasticsearch cluster is down!', error);
   } else {
-      console.log(clc.cyan('connected to elastic server'));
+    console.log(clc.cyan('connected to elastic server'));
   }
+});
+
+// connect socket events
+io.on('connection', (socket) => {
+  socket.on('serverEvent', (data) => {
+    console.log(data);
+    if (data.type === "user_question") {
+      handleQuestion(data.payload.question).then(function (val) {
+        io.emit('clintEvent', messages);
+      })
+    } else if(data.type = "user_answer") {
+      handleAnswer(data.payload.question, data.payload.answer).then(function (val) {
+        io.emit('clintEvent', messages);
+      })
+    }
+  });
 });
 
 // routes:
 const getMessages = require('./routes/getMessages');
-const hendleQuestion = require('./routes/hendleQuestion');
-const hendleAnswer = require('./routes/hendleAnswer')
-
 
 app.use(getMessages);
-app.use(hendleQuestion);
-app.use(hendleAnswer);
 
 // start server
 server.listen(port, () => {

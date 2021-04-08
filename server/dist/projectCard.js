@@ -146,9 +146,11 @@ Answer
     this.input = "";
     this.answerInput = "";
     this.messages = [];
-    setInterval(() => {
-      this.getMessages();
-    }, 2000);
+    this.getMessages();
+    socket.on('clintEvent', payload => {
+      console.log(payload);
+      this.messages = payload;
+    });
   }
 
   static get properties() {
@@ -196,34 +198,26 @@ Answer
   }
 
   sendQuestion(question) {
+    socket.emit('serverEvent', {
+      type: "user_question",
+      payload: {
+        question: question
+      }
+    });
     document.getElementById('myInput').value = '';
     this.input = "";
-    fetch(this.sendQuestionUrl, {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        question: question
-      })
-    }).then(res => res.json()).then(res => {});
   }
 
   sendAnswer(question, answer) {
     this.answerInput = "";
     document.getElementById('answerInput').value = '';
-    fetch(this.sendAnswerUrl, {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    socket.emit('serverEvent', {
+      type: "user_answer",
+      payload: {
         question: question,
         answer: answer
-      })
-    }).then(res => res.json()).then(res => {});
+      }
+    });
   }
 
 }

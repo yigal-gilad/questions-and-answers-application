@@ -5,7 +5,8 @@
   "main": "projectCard.js",
   "dependencies": {
     "lit-element": "^2.4.0",
-    "requirejs": "^2.3.6"
+    "requirejs": "^2.3.6",
+    "socket.io-client": "^4.0.1"
   },
   "devDependencies": {},
   "scripts": {
