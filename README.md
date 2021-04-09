@@ -13,5 +13,4 @@ NodeJS, Express, MongoDB, Elastic search
 
 ## application link:
 
-(https://github.com/angular/angular-cli/blob/master/README.md).
-
+https://questions-and-answers-israel.herokuapp.com
